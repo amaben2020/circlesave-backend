@@ -24,7 +24,7 @@ export const AppDataSource = new DataSource({
   migrations: ['dist/db/migrations/*.js'],
   extra: {
     ssl: {
-      rejectUnauthorized: false, // Required for FreeDB
+      rejectUnauthorized: false,
     },
   },
 });
