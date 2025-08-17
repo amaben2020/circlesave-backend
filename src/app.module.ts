@@ -6,10 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { paystackConfig } from 'config/paystackConfig';
+import { paystackConfig } from 'db/config/paystackConfig';
 import { UserModule } from './user/user.module';
-import databaseConfig from 'config/database';
-import appConfig from 'config/appConfig';
+import databaseConfig from 'db/config/database';
+import appConfig from 'db/config/appConfig';
 
 const ENV = process.env.NODE_ENV ?? 'development';
 
@@ -32,7 +32,9 @@ const ENV = process.env.NODE_ENV ?? 'development';
         password: configService.get('database.password')!,
         database: configService.get('database.name')!,
         synchronize: configService.get('database.synchronize')!,
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'], // This will load all .entity.ts files
+        // or be explicit:
+        // entities: [User]
       }),
     }),
     UserModule,

@@ -96,3 +96,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+STEPS TO GENERATE A NEW MIGRATION
+
+To avoid wasting your weekend, ensure that db => config, migrations then data-source.ts are inside the same folder
+
+ensure it points to /db
+npm run migration:generate -- db/migrations/firstMigration
+
+npm run migration:run

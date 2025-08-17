@@ -1,9 +1,9 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
+  Column,
+  // CreateDateColumn,
+  // UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -17,15 +17,15 @@ export class User {
   @Column({ length: 500 })
   lastName: string;
 
-  @Column('string')
+  @Column()
   email: string;
 
   @Column()
   phone: string;
 
-  @CreateDateColumn({ type: 'varchar' })
-  createdAt: Date;
+  // @CreateDateColumn({ precision: 6 })
+  // createdAt: Date;
 
-  @UpdateDateColumn({ type: 'varchar' })
-  updatedAt: Date;
+  // @UpdateDateColumn({ precision: 6 })
+  // updatedAt: Date;
 }
