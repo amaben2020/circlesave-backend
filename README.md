@@ -101,7 +101,9 @@ STEPS TO GENERATE A NEW MIGRATION
 
 To avoid wasting your weekend, ensure that db => config, migrations then data-source.ts are inside the same folder
 
+Ensure that migrations is inside dist => dist/db/migrations when you generate a new migration file
 ensure it points to /db
-npm run migration:generate -- db/migrations/firstMigration
 
-npm run migration:run
+Step 1: npm run migration:generate -- db/migrations/firstMigration
+
+Step 2: npm run migration:run
