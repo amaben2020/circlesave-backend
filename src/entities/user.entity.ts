@@ -2,8 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  // CreateDateColumn,
-  // UpdateDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -23,9 +23,9 @@ export class User {
   @Column()
   phone: string;
 
-  // @CreateDateColumn({ precision: 6 })
-  // createdAt: Date;
+  @CreateDateColumn({ precision: 6 })
+  createdAt: Date;
 
-  // @UpdateDateColumn({ precision: 6 })
-  // updatedAt: Date;
+  @UpdateDateColumn({ precision: 6 })
+  updatedAt: Date;
 }
