@@ -43,9 +43,7 @@ export class UserService {
 
       const response = await this.userRepository.save(newUser);
 
-      console.log('response', response);
-
-      return newUser;
+      return response;
     } catch (error: unknown) {
       if (isMySqlDuplicateEntryError(error)) {
         if (error.sqlMessage.includes('phone')) {
