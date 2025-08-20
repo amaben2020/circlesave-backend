@@ -17,10 +17,14 @@ export class User {
   @Column({ length: 500 })
   lastName: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   phone: string;
 
   @CreateDateColumn({ precision: 6 })

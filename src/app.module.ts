@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { paystackConfig } from 'db/config/paystackConfig';
 import { UserModule } from './user/user.module';
 import { PaymentsModule } from './payments/payments.module';
+import { WalletModule } from './wallet/wallet.module';
 import databaseConfig from 'db/config/database';
 import appConfig from 'db/config/appConfig';
 
@@ -40,6 +41,7 @@ const ENV = process.env.NODE_ENV ?? 'development';
     }),
     UserModule,
     PaymentsModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],
