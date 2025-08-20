@@ -1,15 +1,30 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import * as crypto from 'crypto';
 import axios from 'axios';
 import { paystackConfig } from 'db/config/paystackConfig';
 import { PaystackWebhookPayload } from './types/PaystackWebhook';
+import { DataSource } from 'typeorm';
+import {
+  Transaction,
+  TransactionStatus,
+  TransactionType,
+} from 'src/entities/transaction.entity';
+import { User } from 'src/entities/user.entity';
+import { Wallet } from 'src/entities/wallet.entity';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     @Inject(paystackConfig.KEY)
     private readonly paystackConfiguration: ConfigType<typeof paystackConfig>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async initializePayment(email: string, amount: number) {
@@ -47,7 +62,39 @@ export class PaymentsService {
         console.log('Charge successful:', payload.data);
         // In a db transaction
         // check if user exists
-        // 2 create  wallet for user with amount
+        await this.dataSource.transaction(async (manager) => {
+          const user = await manager.findOne(User, {
+            where: { email: payload.data.customer.email },
+          });
+
+          if (!user) {
+            throw new BadRequestException(`User not found`);
+          }
+          const wallet = manager.create(Wallet, {
+            balance: payload.data.amount / 100,
+            // userId: payload.data.customer.id,
+            amount: payload.data.amount / 100, // to naira from kobo
+            user: user,
+          });
+
+          if (!wallet) {
+            throw new BadRequestException(`Error creating wallet`);
+          }
+          await manager.save(wallet);
+
+          const transaction = manager.create(Transaction, {
+            status: TransactionStatus.SUCCESS,
+            type: TransactionType.FUNDING,
+            amount: payload.data.amount / 100, // to naira from kobo
+            currency: 'NGN',
+            user: user,
+            reference: payload.data.reference,
+            providerResponse: JSON.stringify(payload),
+          });
+
+          await manager.save(transaction);
+        });
+        // 2 create wallet for user with amount
         // 3. update transaction and transactions histories
         // 4. use rabbitmq or bull queue to process messages here i.e emails, sms, notifications
 
