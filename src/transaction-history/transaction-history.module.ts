@@ -4,6 +4,6 @@ import { TransactionHistoryService } from './transaction-history.service';
 
 @Module({
   controllers: [TransactionHistoryController],
-  providers: [TransactionHistoryService]
+  providers: [TransactionHistoryService],
 })
 export class TransactionHistoryModule {}
