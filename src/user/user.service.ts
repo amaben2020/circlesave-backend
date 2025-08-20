@@ -47,7 +47,6 @@ export class UserService {
 
       return newUser;
     } catch (error: unknown) {
-      // MySQL duplicate entry error
       if (isMySqlDuplicateEntryError(error)) {
         if (error.sqlMessage.includes('phone')) {
           throw new ConflictException('Phone number already exists');
@@ -58,7 +57,6 @@ export class UserService {
         throw new ConflictException('Duplicate entry');
       }
 
-      // Other errors
       throw new BadRequestException('Could not create user');
     }
   }
