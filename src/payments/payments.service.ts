@@ -3,6 +3,7 @@ import type { ConfigType } from '@nestjs/config';
 import * as crypto from 'crypto';
 import axios from 'axios';
 import { paystackConfig } from 'db/config/paystackConfig';
+import { PaystackWebhookPayload } from './types/PaystackWebhook';
 
 @Injectable()
 export class PaymentsService {
@@ -22,7 +23,10 @@ export class PaymentsService {
     return response.data;
   }
 
-  async handleWebhookEvent(payload: any, signature: string) {
+  async handleWebhookEvent(
+    payload: PaystackWebhookPayload,
+    signature?: string | string[],
+  ) {
     // Verify webhook signature
     const hash = crypto
       .createHmac('sha512', this.paystackConfiguration.secretKey as string)

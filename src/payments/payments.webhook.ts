@@ -1,30 +1,8 @@
-class PaystackWebhookDto {
-  event: string;
-  data: {
-    reference: string;
-    amount: number;
-    status: string;
-    customer: {
-      email: string;
-    };
-    metadata?: any;
-  };
-}
-
-import * as crypto from 'crypto';
 import { PaymentsService } from './payments.service';
-import {
-  BadRequestException,
-  Controller,
-  Headers,
-  HttpStatus,
-  Inject,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Controller, Headers, Inject, Post, Req } from '@nestjs/common';
 import { paystackConfig } from 'db/config/paystackConfig';
 import type { ConfigType } from '@nestjs/config';
+import type { Request } from 'express';
 
 @Controller('webhook/paystack')
 export class WebhookController {
@@ -36,12 +14,13 @@ export class WebhookController {
   ) {}
 
   @Post()
-  async handleWebhook(@Req() req: Request, @Res() res: Response) {
+  async handleWebhook(@Req() req: Request) {
     try {
-      await this.paymentService.handleWebhookEvent(
-        req.body,
-        req.headers['x-paystack-signature'],
-      );
+      if (req.body)
+        await this.paymentService.handleWebhookEvent(
+          req.body,
+          req.headers['x-paystack-signature'],
+        );
       return 'Webhook received successfully';
     } catch (error) {
       console.error('Error handling Paystack webhook:', error);
