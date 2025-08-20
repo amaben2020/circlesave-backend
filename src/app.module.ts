@@ -10,6 +10,8 @@ import { paystackConfig } from 'db/config/paystackConfig';
 import { UserModule } from './user/user.module';
 import { PaymentsModule } from './payments/payments.module';
 import { WalletModule } from './wallet/wallet.module';
+import { TransactionModule } from './transaction/transaction.module';
+import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import databaseConfig from 'db/config/database';
 import appConfig from 'db/config/appConfig';
 
@@ -42,6 +44,8 @@ const ENV = process.env.NODE_ENV ?? 'development';
     UserModule,
     PaymentsModule,
     WalletModule,
+    TransactionModule,
+    TransactionHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

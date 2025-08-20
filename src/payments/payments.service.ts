@@ -45,7 +45,12 @@ export class PaymentsService {
       case 'charge.success':
         // Handle successful payment
         console.log('Charge successful:', payload.data);
-        // Update your database, send confirmation emails, etc.
+        // In a db transaction
+        // check if user exists
+        // 2 create  wallet for user with amount
+        // 3. update transaction and transactions histories
+        // 4. use rabbitmq or bull queue to process messages here i.e emails, sms, notifications
+
         break;
       case 'transfer.success':
         // Handle successful transfer

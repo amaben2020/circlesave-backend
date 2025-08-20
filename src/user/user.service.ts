@@ -58,4 +58,16 @@ export class UserService {
       throw new BadRequestException('Could not create user');
     }
   }
+
+  async findOneByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
+  }
+
+  async deleteUser(id: number) {
+    return await this.userRepository.delete(id);
+  }
+
+  async updateUser(id: number, data: Partial<User>) {
+    return await this.userRepository.update(id, data);
+  }
 }
