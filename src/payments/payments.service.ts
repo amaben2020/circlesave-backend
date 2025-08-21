@@ -68,13 +68,6 @@ export class PaymentsService {
             where: { email: payload.data.customer.email },
           });
 
-          console.log('user', user);
-
-          console.log(
-            'payload.data.customer.email',
-            payload.data.customer.email,
-          );
-
           if (!user) throw new BadRequestException(`User not found`);
 
           const hasWallet = await manager.findOne(Wallet, {
