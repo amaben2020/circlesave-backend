@@ -17,6 +17,7 @@ import {
 } from 'src/entities/transaction.entity';
 import { User } from 'src/entities/user.entity';
 import { Wallet } from 'src/entities/wallet.entity';
+import { TransactionHistories } from 'src/entities/transactionHistories.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -67,20 +68,39 @@ export class PaymentsService {
             where: { email: payload.data.customer.email },
           });
 
-          if (!user) {
-            throw new BadRequestException(`User not found`);
-          }
-          const wallet = manager.create(Wallet, {
-            balance: payload.data.amount / 100,
-            // userId: payload.data.customer.id,
-            amount: payload.data.amount / 100, // to naira from kobo
-            user: user,
+          console.log('user', user);
+
+          console.log(
+            'payload.data.customer.email',
+            payload.data.customer.email,
+          );
+
+          if (!user) throw new BadRequestException(`User not found`);
+
+          const hasWallet = await manager.findOne(Wallet, {
+            where: { user: { id: user.id } },
+            relations: ['user'],
           });
 
-          if (!wallet) {
-            throw new BadRequestException(`Error creating wallet`);
+          console.log('hasWallet ===>', hasWallet);
+
+          if (!hasWallet?.id) {
+            const wallet = manager.create(Wallet, {
+              balance: payload.data.amount / 100,
+              amount: payload.data.amount / 100,
+              user: user,
+            });
+
+            await manager.save(wallet);
+          } else {
+            hasWallet.balance += payload.data.amount / 100;
+            // hasWallet.amount += payload.data.amount / 100;
+            hasWallet.amount =
+              Number(hasWallet.amount) + payload.data.amount / 100;
+
+            hasWallet.user = user;
+            await manager.save(hasWallet);
           }
-          await manager.save(wallet);
 
           const transaction = manager.create(Transaction, {
             status: TransactionStatus.SUCCESS,
@@ -91,8 +111,25 @@ export class PaymentsService {
             reference: payload.data.reference,
             providerResponse: JSON.stringify(payload),
           });
-
           await manager.save(transaction);
+          const balanceBefore = hasWallet?.balance;
+          const balanceAfter =
+            Number(balanceBefore) + payload.data.amount / 100;
+
+          if (transaction.id) {
+            const history = manager.create(TransactionHistories, {
+              type: TransactionType.FUNDING,
+              status: TransactionStatus.SUCCESS,
+              amount: payload.data.amount / 100,
+              currency: 'NGN',
+              transaction: transaction,
+              balanceBefore: balanceBefore || 0,
+              balanceAfter: balanceAfter || 0,
+              transactionId: transaction.id,
+            });
+
+            await manager.save(history);
+          }
         });
         // 2 create wallet for user with amount
         // 3. update transaction and transactions histories
@@ -100,8 +137,12 @@ export class PaymentsService {
 
         break;
       case 'transfer.success':
-        // Handle successful transfer
+        // Handle successful transfer prolly when withdrawal is done
         console.log('Transfer successful:', payload.data);
+        break;
+
+      case 'transfer.failed':
+        console.log('FAILED');
         break;
       // Add more cases for other events as needed
       default:

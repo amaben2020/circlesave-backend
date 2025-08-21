@@ -9,7 +9,7 @@ import {
 
 import { User } from 'src/entities/user.entity';
 import { Wallet } from 'src/entities/wallet.entity';
-import { TransactionHistories } from 'src/entities/transactionHistories';
+import { TransactionHistories } from 'src/entities/transactionHistories.entity';
 
 @Injectable()
 export class TransactionService {
