@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
@@ -19,6 +20,16 @@ import { User } from 'src/entities/user.entity';
 import { Wallet } from 'src/entities/wallet.entity';
 import { TransactionHistories } from 'src/entities/transactionHistories.entity';
 
+type PaystackInitializeResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    authorization_url: string;
+    access_code: string;
+    reference: string;
+  };
+};
+
 @Injectable()
 export class PaymentsService {
   constructor(
@@ -28,10 +39,15 @@ export class PaymentsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async initializePayment(email: string, amount: number) {
+  private readonly logger = new Logger(PaymentsService.name);
+
+  async initializePayment(
+    email: string,
+    amount: number,
+  ): Promise<PaystackInitializeResponse> {
     const paystackSecret = this.paystackConfiguration.secretKey;
 
-    const response = await axios.post(
+    const response = await axios.post<PaystackInitializeResponse>(
       'https://api.paystack.co/transaction/initialize',
       { email, amount },
       { headers: { Authorization: `Bearer ${paystackSecret}` } },
@@ -49,9 +65,6 @@ export class PaymentsService {
       .update(JSON.stringify(payload))
       .digest('hex');
 
-    console.log('payload', payload);
-    console.log('payload.event', payload.event);
-
     if (hash !== signature) {
       throw new UnauthorizedException('Invalid Paystack webhook signature');
     }
@@ -59,10 +72,6 @@ export class PaymentsService {
     // Process the webhook event based on its event type
     switch (payload.event) {
       case 'charge.success':
-        // Handle successful payment
-        console.log('Charge successful:', payload.data);
-        // In a db transaction
-        // check if user exists
         await this.dataSource.transaction(async (manager) => {
           const user = await manager.findOne(User, {
             where: { email: payload.data.customer.email },
@@ -75,6 +84,13 @@ export class PaymentsService {
             relations: ['user'],
           });
 
+          console.log('user', user);
+
+          console.log(
+            'payload.data.customer.email',
+            payload.data.customer.email,
+          );
+
           if (!hasWallet?.id) {
             const wallet = manager.create(Wallet, {
               balance: payload.data.amount / 100,
@@ -85,7 +101,6 @@ export class PaymentsService {
             await manager.save(wallet);
           } else {
             hasWallet.balance += payload.data.amount / 100;
-            // hasWallet.amount += payload.data.amount / 100;
             hasWallet.amount =
               Number(hasWallet.amount) + payload.data.amount / 100;
 
@@ -96,7 +111,7 @@ export class PaymentsService {
           const transaction = manager.create(Transaction, {
             status: TransactionStatus.SUCCESS,
             type: TransactionType.FUNDING,
-            amount: payload.data.amount / 100, // to naira from kobo
+            amount: payload.data.amount / 100,
             currency: 'NGN',
             user: user,
             reference: payload.data.reference,
@@ -128,12 +143,11 @@ export class PaymentsService {
 
         break;
       case 'transfer.success':
-        // Handle successful transfer prolly when withdrawal is done
-        console.log('Transfer successful:', payload.data);
+        this.logger.log(`Transfer successful 🍀: ${JSON.stringify(payload)}`);
         break;
 
       case 'transfer.failed':
-        console.log('FAILED');
+        this.logger.log(`Transfer failed ❌: ${JSON.stringify(payload)}`);
         break;
       // Add more cases for other events as needed
       default:
