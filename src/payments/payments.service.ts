@@ -82,8 +82,6 @@ export class PaymentsService {
             relations: ['user'],
           });
 
-          console.log('hasWallet ===>', hasWallet);
-
           if (!hasWallet?.id) {
             const wallet = manager.create(Wallet, {
               balance: payload.data.amount / 100,
