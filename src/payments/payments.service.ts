@@ -84,13 +84,6 @@ export class PaymentsService {
             relations: ['user'],
           });
 
-          console.log('user', user);
-
-          console.log(
-            'payload.data.customer.email',
-            payload.data.customer.email,
-          );
-
           if (!hasWallet?.id) {
             const wallet = manager.create(Wallet, {
               balance: payload.data.amount / 100,
@@ -137,8 +130,7 @@ export class PaymentsService {
             await manager.save(history);
           }
         });
-        // 2 create wallet for user with amount
-        // 3. update transaction and transactions histories
+        // TODO: SEND NOTIFICATION TO USER HERE
         // 4. use rabbitmq or bull queue to process messages here i.e emails, sms, notifications
 
         break;
