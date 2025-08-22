@@ -12,6 +12,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { WalletModule } from './wallet/wallet.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
+import { GroupMembersModule } from './group-members/group-members.module';
 import databaseConfig from 'db/config/database';
 import appConfig from 'db/config/appConfig';
 
@@ -46,6 +47,7 @@ const ENV = process.env.NODE_ENV ?? 'development';
     WalletModule,
     TransactionModule,
     TransactionHistoryModule,
+    GroupMembersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

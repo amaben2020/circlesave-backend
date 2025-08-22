@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Contribution } from './contribution.entity';
 
 export enum TransactionType {
   FUNDING = 'FUNDING', // Customer → Business
@@ -47,6 +48,9 @@ export class Transaction {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
+
+  @ManyToOne(() => Contribution, { onDelete: 'CASCADE' })
+  contribution: Contribution;
 
   @Column({ nullable: true })
   reference: string; // Pay stack reference or internal ref

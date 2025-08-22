@@ -15,13 +15,13 @@ export class Group {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'int' })
   cycleAmount: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'int' })
   cycleNumber: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'int' })
   currentCycle: number;
 
   @OneToMany(() => GroupMember, (groupMember) => groupMember.group)
