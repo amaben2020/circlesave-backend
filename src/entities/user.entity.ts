@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { GroupMember } from './groupMember.entity';
 
 @Entity()
 export class User {
@@ -26,6 +28,9 @@ export class User {
     unique: true,
   })
   phone: string;
+
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.user)
+  groupMemberships: GroupMember[];
 
   @CreateDateColumn({ precision: 6 })
   createdAt: Date;
