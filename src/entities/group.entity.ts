@@ -7,11 +7,6 @@ export enum GroupStatus {
   ARCHIVED = 'archived',
 }
 
-export enum MemberRole {
-  ADMIN = 'admin',
-  MEMBER = 'member',
-}
-
 @Entity()
 export class Group {
   @PrimaryGeneratedColumn()
@@ -37,10 +32,4 @@ export class Group {
     enum: GroupStatus,
   })
   status: GroupStatus;
-
-  @Column({
-    type: 'enum',
-    enum: MemberRole,
-  })
-  role: MemberRole;
 }
