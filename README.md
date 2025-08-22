@@ -107,3 +107,5 @@ ensure it points to /db
 Step 1: npm run migration:generate -- db/migrations/firstMigration
 
 Step 2: npm run migration:run
+
+Always create a new migration file when you make changes to the database schema
