@@ -2,9 +2,9 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GroupMember } from './groupMember.entity';
 
 export enum GroupStatus {
-  ACTIVE = 'active',
+  ACTIVE = 'active', // active when admin knows the group members are complete
   COMPLETED = 'completed',
-  ARCHIVED = 'archived',
+  ARCHIVED = 'archived', // default state after creation
 }
 
 @Entity()
