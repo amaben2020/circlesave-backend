@@ -10,6 +10,8 @@ export class GroupsService {
   constructor(
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>, // ✅ inject repo
+    @InjectRepository(GroupMember)
+    private readonly groupMembersRepository: Repository<GroupMember>, // ✅ inject repo
 
     private readonly dataSource: DataSource, // ✅ inject DataSource separately
   ) {}
@@ -87,5 +89,39 @@ export class GroupsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async activateGroup(groupId: number, userId: number) {
+    const group = await this.groupRepository.findOne({
+      where: { id: groupId },
+      relations: ['members'],
+    });
+
+    if (group?.status !== GroupStatus.ARCHIVED) {
+      throw new BadRequestException(
+        `Cannot activate a non-archived group Current status of ${group?.name}: ${group?.status}`,
+      );
+    }
+
+    const isGroupAdmin = await this.groupMembersRepository.findOne({
+      where: {
+        group: { id: groupId },
+        user: { id: userId },
+        role: MemberRole.ADMIN,
+      },
+    });
+
+    console.log('isGroupAdmin', isGroupAdmin);
+
+    if (!group || !group.id) {
+      throw new Error(`No archived group found`);
+    }
+
+    await this.groupRepository.update(
+      { id: groupId },
+      { status: GroupStatus.ACTIVE },
+    );
+
+    return `${group.name} activated!`;
   }
 }

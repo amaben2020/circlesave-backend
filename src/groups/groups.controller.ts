@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dtos/create-group';
 
@@ -23,5 +23,13 @@ export class GroupsController {
     @Param('userId') userId: number,
   ): Promise<any> {
     return await this.groupsService.joinGroup(groupId, userId);
+  }
+
+  @Patch('/activate/:groupId/:userId')
+  async activateGroup(
+    @Param('groupId') groupId: number,
+    @Param('userId') userId: number,
+  ) {
+    return await this.groupsService.activateGroup(groupId, userId);
   }
 }
