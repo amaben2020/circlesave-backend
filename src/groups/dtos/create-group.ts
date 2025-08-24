@@ -1,6 +1,5 @@
 import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { GroupStatus } from 'src/entities/group.entity';
-import { User } from 'src/entities/user.entity';
 import { Entity } from 'typeorm';
 
 @Entity()
@@ -10,6 +9,7 @@ export class CreateGroupDto {
   @IsNotEmpty() @IsInt() cycleNumber: number;
   @IsNotEmpty() @IsInt() currentCycle: number;
   @IsEnum(GroupStatus) status: GroupStatus;
-
-  user: User;
+  @IsNotEmpty()
+  @IsInt()
+  userId: number;
 }

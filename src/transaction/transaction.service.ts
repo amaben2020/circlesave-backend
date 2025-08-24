@@ -35,12 +35,10 @@ export class TransactionService {
     reference?: string;
     providerResponse?: string;
   }): Promise<Transaction> {
-    const user = { id: data.userId } as User;
-
     const transaction = this.transactionRepo.create({
       ...data,
       status: TransactionStatus.PENDING,
-      user,
+      user: { id: data.userId },
     });
 
     return this.transactionRepo.save(transaction);

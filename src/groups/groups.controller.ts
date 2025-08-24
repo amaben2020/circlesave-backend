@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dtos/create-group';
 
@@ -6,7 +6,14 @@ import { CreateGroupDto } from './dtos/create-group';
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 
-  async getGroups(createGroup: CreateGroupDto): Promise<any> {
+  @Get()
+  getAll() {
+    return 'Ok';
+  }
+
+  @Post('/create')
+  async create(@Body() createGroup: CreateGroupDto): Promise<any> {
+    console.log(createGroup);
     return await this.groupsService.create(createGroup);
   }
 }
