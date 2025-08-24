@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Group, GroupStatus } from 'src/entities/group.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -57,13 +57,17 @@ export class GroupsService {
   async joinGroup(groupId: number, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       const hasJoined = await queryRunner.manager.findOneBy(GroupMember, {
         group: { id: groupId },
         user: { id: userId },
       });
 
-      if (hasJoined) {
-        throw new Error('User has already joined this group');
+      console.log(hasJoined);
+
+      if (hasJoined?.id) {
+        throw new BadRequestException('User has already joined this group');
       }
 
       const newMember = queryRunner.manager.create(GroupMember, {
@@ -75,6 +79,7 @@ export class GroupsService {
         role: MemberRole.MEMBER,
       });
       await queryRunner.manager.save(newMember);
+      await queryRunner.commitTransaction(); // 👈 commit only if all good
       return newMember;
     } catch (error) {
       await queryRunner.rollbackTransaction();

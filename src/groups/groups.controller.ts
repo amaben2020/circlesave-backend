@@ -22,7 +22,6 @@ export class GroupsController {
     @Param('groupId') groupId: number,
     @Param('userId') userId: number,
   ): Promise<any> {
-    console.log(groupId, userId);
     return await this.groupsService.joinGroup(groupId, userId);
   }
 }
