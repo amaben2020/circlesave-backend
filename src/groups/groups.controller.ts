@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dtos/create-group';
 
@@ -15,5 +15,14 @@ export class GroupsController {
   async create(@Body() createGroup: CreateGroupDto): Promise<any> {
     console.log(createGroup);
     return await this.groupsService.create(createGroup);
+  }
+
+  @Post('/join/:groupId/:userId')
+  async joinGroup(
+    @Param('groupId') groupId: number,
+    @Param('userId') userId: number,
+  ): Promise<any> {
+    console.log(groupId, userId);
+    return await this.groupsService.joinGroup(groupId, userId);
   }
 }
