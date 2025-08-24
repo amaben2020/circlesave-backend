@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Contribution } from 'src/entities/contribution.entity';
 import { Repository } from 'typeorm';
+import { CreateContributionDto } from './dtos/create-contribution';
 
 @Injectable()
 export class ContributionsService {
@@ -10,7 +11,7 @@ export class ContributionsService {
     private readonly contributionsRepository: Repository<Contribution>,
   ) {}
 
-  async create(contribution: Contribution): Promise<Contribution> {
-    return this.contributionsRepository.save(contribution);
-  }
+  // async create(
+  //   contribution: CreateContributionDto,
+  // ): Promise<CreateContributionDto> {}
 }

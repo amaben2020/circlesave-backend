@@ -14,6 +14,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import { GroupMembersModule } from './group-members/group-members.module';
 import { ContributionsModule } from './contributions/contributions.module';
+import { GroupsModule } from './groups/groups.module';
 import databaseConfig from 'db/config/database';
 import appConfig from 'db/config/appConfig';
 
@@ -50,6 +51,7 @@ const ENV = process.env.NODE_ENV ?? 'development';
     TransactionHistoryModule,
     GroupMembersModule,
     ContributionsModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

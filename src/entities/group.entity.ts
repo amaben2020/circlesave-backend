@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GroupMember } from './groupMember.entity';
 
 export enum GroupStatus {
-  ACTIVE = 'active', // waiting for webhook or confirmation
+  ACTIVE = 'active',
   COMPLETED = 'completed',
   ARCHIVED = 'archived',
 }
