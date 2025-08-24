@@ -13,6 +13,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 import { GroupMembersModule } from './group-members/group-members.module';
+import { ContributionsModule } from './contributions/contributions.module';
 import databaseConfig from 'db/config/database';
 import appConfig from 'db/config/appConfig';
 
@@ -48,6 +49,7 @@ const ENV = process.env.NODE_ENV ?? 'development';
     TransactionModule,
     TransactionHistoryModule,
     GroupMembersModule,
+    ContributionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
