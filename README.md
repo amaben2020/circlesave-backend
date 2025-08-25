@@ -109,3 +109,13 @@ Step 1: npm run migration:generate -- db/migrations/firstMigration
 Step 2: npm run migration:run
 
 Always create a new migration file when you make changes to the database schema
+
+🌍 Access your services prometheus and Grafana dashboard at these URLs:
+
+NestJS app → http://localhost:8000
+
+Prometheus → http://localhost:9090
+
+Grafana → http://localhost:3030
+
+docker compose up -d

@@ -1,0 +1,30 @@
+services:
+  circlesave-app:
+    build: .
+    container_name: circlesave-app
+    ports:
+      - '8000:8000'
+    depends_on:
+      - circlesave-prometheus
+
+  circlesave-prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: circlesave-prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      # Mount the config file directly into Prometheus expected path
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  circlesave-grafana:
+    image: grafana/grafana:11.2.2
+    container_name: circlesave-grafana
+    ports:
+      - '3030:3000'
+    depends_on:
+      - circlesave-prometheus

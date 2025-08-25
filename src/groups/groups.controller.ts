@@ -1,13 +1,19 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dtos/create-group';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter } from 'prom-client';
 
 @Controller('groups')
 export class GroupsController {
-  constructor(private groupsService: GroupsService) {}
+  constructor(
+    private groupsService: GroupsService,
+    @InjectMetric('get_hello_calls') public counter: Counter<string>,
+  ) {}
 
   @Get()
   getAll() {
+    this.counter.inc();
     return 'Ok';
   }
 
